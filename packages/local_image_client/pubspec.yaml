@@ -1,0 +1,20 @@
+name: local_image_client
+description: Local image persistence utilities for the Very Good Coffee app.
+version: 0.1.0
+publish_to: none
+
+environment:
+  sdk: ^3.9.2
+  flutter: ">=3.22.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  path: ^1.8.3
+  path_provider: ^2.1.3
+  uuid: ^4.5.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  very_good_analysis: ^6.0.0
