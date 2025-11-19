@@ -1,0 +1,34 @@
+name: vgcfp_ui
+description: Shared UI widgets for the Very Good Coffee app.
+version: 0.1.0
+publish_to: none
+
+environment:
+  sdk: ^3.9.2
+  flutter: ">=3.22.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  very_good_analysis: ^6.0.0
+
+flutter:
+  fonts:
+    - family: RobotoSlab
+      fonts:
+        - asset: assets/fonts/RobotoSlab-Black.ttf
+          weight: 900
+        - asset: assets/fonts/RobotoSlab-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/RobotoSlab-Light.ttf
+          weight: 300
+        - asset: assets/fonts/RobotoSlab-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/RobotoSlab-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/RobotoSlab-Thin.ttf
+          weight: 100
