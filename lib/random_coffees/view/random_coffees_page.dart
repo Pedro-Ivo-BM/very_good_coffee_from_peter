@@ -85,7 +85,8 @@ class _RandomCoffeeViewState extends State<_RandomCoffeeView> {
           Widget body;
           Widget? bottomNavigation;
 
-          if (state.status == RandomCoffeeStatus.loading &&
+          if ((state.status == RandomCoffeeStatus.loading ||
+                  state.status == RandomCoffeeStatus.initial) &&
               state.randomCoffee == null) {
             body = const Center(child: CircularProgressIndicator());
           } else if (state.randomCoffee != null) {

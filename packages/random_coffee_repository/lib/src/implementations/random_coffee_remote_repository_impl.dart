@@ -15,12 +15,11 @@ typedef RandomCoffeePayloadParser =
 class RandomCoffeeRemoteRepositoryImpl extends RandomCoffeeRemoteRepository {
   RandomCoffeeRemoteRepositoryImpl({
     required HttpClient httpClient,
-    Uri? apiUri,
+    required Uri apiUri,
     RandomCoffeeJsonDecoder? decodeJson,
     RandomCoffeePayloadParser? parsePayload,
   }) : _httpClient = httpClient,
-       _apiUri =
-           apiUri ?? Uri.parse('https://coffee.alexflipnote.dev/random.json'),
+        _apiUri = apiUri,
        _decodeJson = decodeJson ?? _defaultDecoder,
        _parsePayload = parsePayload ?? RandomCoffeePayload.fromJson;
 
