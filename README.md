@@ -63,11 +63,19 @@ This separation allows for better code organization, easier testing, and the abi
 
 ## Project setup
 
-Install dependencies:
+Install dependencies for every package first (the main app depends on them):
+
+```sh
+bash scripts/clean_and_get_all.sh
+```
+
+This script iterates through `packages/*`, runs `flutter clean`, and fetches dependencies via `flutter pub get`. Only after all packages are up to date should you install dependencies for the root app:
 
 ```sh
 flutter pub get
 ```
+
+Running the root command last ensures `pubspec` references to the local packages resolve correctly.
 
 ## Environment folder setup
 
@@ -138,3 +146,24 @@ This loads every key/value pair declared in `env/configs.txt` and forwards them 
 4. Apply and run. Android Studio will forward this argument to `flutter run`, and the Flutter tool will load all environment variables from your JSON file at startup.
 
 > **Note:** Android Studio does not process or parse `env/configs.txt` itself. It only passes the argument to Flutter, which must be version 3.17 or newer to support `--dart-define-from-file`.
+
+## Repository scripts
+
+The `scripts/` directory contains helper shell scripts to streamline repeated commands when working with the modular packages:
+
+- `scripts/clean_and_get_all.sh`: iterates over every subfolder in `packages/`, runs `flutter clean`, and then `flutter pub get`. Useful after switching branches or bumping dependencies.
+- `scripts/test_all_packages.sh`: traverses the same package list and executes `flutter test` inside each one, stopping with a non-zero exit code if any package fails.
+
+Run them from the repository root using either the executable bit or explicitly calling `bash`:
+
+```sh
+chmod +x scripts/*.sh          # only once, to ensure executables
+./scripts/clean_and_get_all.sh
+./scripts/test_all_packages.sh
+
+# alternatively
+bash scripts/clean_and_get_all.sh
+bash scripts/test_all_packages.sh
+```
+
+Both scripts respect the current repo structure (`packages/*/` with a `pubspec.yaml`) and print progress for each package processed.
