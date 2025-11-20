@@ -41,6 +41,8 @@ dependencies:
     path: packages/favorited_images_repository
   image_download_service:
     path: packages/image_download_service
+  connectivity_helper:
+    path: packages/connectivity_helper
   vgcfp_core:
     path: packages/vgcfp_core
   vgcfp_ui:
