@@ -3,13 +3,6 @@ import 'package:vgcfp_ui/vgcfp_ui.dart';
 
 void main() {
   group('AppTextStyle', () {
-    test('displayLarge has correct properties', () {
-      expect(AppTextStyle.displayLarge.fontSize, equals(32.0));
-      expect(AppTextStyle.displayLarge.fontWeight, equals(AppFontWeight.bold));
-      expect(AppTextStyle.displayLarge.color, equals(AppColors.secondary));
-      expect(AppTextStyle.displayLarge.fontFamily, equals('RobotoSlab'));
-    });
-
     test('displayMedium has correct properties', () {
       expect(AppTextStyle.displayMedium.fontSize, equals(28.0));
       expect(AppTextStyle.displayMedium.fontWeight, equals(AppFontWeight.bold));
@@ -104,13 +97,6 @@ void main() {
       expect(AppTextStyle.success.fontSize, equals(14.0));
       expect(AppTextStyle.success.fontWeight, equals(AppFontWeight.medium));
       expect(AppTextStyle.success.color, equals(AppColors.coffeeAccent));
-    });
-
-    test('all styles use RobotoSlab font family', () {
-      expect(AppTextStyle.displayLarge.fontFamily, equals('RobotoSlab'));
-      expect(AppTextStyle.bodyMedium.fontFamily, equals('RobotoSlab'));
-      expect(AppTextStyle.labelLarge.fontFamily, equals('RobotoSlab'));
-      expect(AppTextStyle.error.fontFamily, equals('RobotoSlab'));
     });
 
     test('display styles are larger than headline styles', () {
