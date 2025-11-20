@@ -23,7 +23,6 @@ void main() {
         id: '1',
         source: Uri.parse('https://example.com/image.jpg'),
         filePath: '/path/to/image.jpg',
-        contentType: 'image/jpeg',
         savedAt: DateTime(2024, 1, 1),
       );
 
@@ -46,8 +45,8 @@ void main() {
       final coffeeImage = record.toFavoriteCoffeeImage();
 
       expect(coffeeImage.id, equals('1'));
-      expect(coffeeImage.sourceUri, equals('https://example.com/image.jpg'));
-      expect(coffeeImage.filePath, equals('/path/to/image.jpg'));
+      expect(coffeeImage.sourceUrl, equals('https://example.com/image.jpg'));
+      expect(coffeeImage.localPath, equals('/path/to/image.jpg'));
       expect(coffeeImage.savedAt, equals(DateTime(2024, 1, 1)));
     });
   });

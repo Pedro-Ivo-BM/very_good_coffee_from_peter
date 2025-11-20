@@ -13,18 +13,19 @@ void main() {
     late MockHttpClient mockHttpClient;
     late ImageDownloadServiceImpl service;
 
+    setUpAll(() {
+      registerFallbackValue(Uri.parse('https://example.com/fallback'));
+    });
+
     setUp(() {
       mockHttpClient = MockHttpClient();
       service = ImageDownloadServiceImpl(httpClient: mockHttpClient);
-
-      registerFallbackValue(Uri.parse('https://example.com'));
     });
 
     group('downloadImage', () {
       test('downloads image successfully with bodyBytes', () async {
-        final coffeeImage = CoffeeImage.fromRemoteImage(
-          '1',
-          'https://example.com/image.jpg',
+        const coffeeImage = CoffeeImage(
+          file: 'https://example.com/image.jpg',
         );
         final bytes = Uint8List.fromList([1, 2, 3, 4]);
         final response = HttpResponse(
@@ -45,9 +46,8 @@ void main() {
       });
 
       test('downloads image successfully with body string', () async {
-        final coffeeImage = CoffeeImage.fromRemoteImage(
-          '1',
-          'https://example.com/image.jpg',
+        const coffeeImage = CoffeeImage(
+          file: 'https://example.com/image.jpg',
         );
         final response = HttpResponse(
           statusCode: 200,
@@ -65,9 +65,8 @@ void main() {
       });
 
       test('uses image content type when available', () async {
-        final coffeeImage = CoffeeImage(
-          id: '1',
-          uri: Uri.parse('https://example.com/image.jpg'),
+        const coffeeImage = CoffeeImage(
+          file: 'https://example.com/image.jpg',
           contentType: 'image/png',
         );
         final bytes = Uint8List.fromList([1, 2, 3]);
@@ -86,9 +85,8 @@ void main() {
       });
 
       test('throws ImageDownloadException when bytes are empty', () async {
-        final coffeeImage = CoffeeImage.fromRemoteImage(
-          '1',
-          'https://example.com/image.jpg',
+        const coffeeImage = CoffeeImage(
+          file: 'https://example.com/image.jpg',
         );
         final response = HttpResponse(
           statusCode: 200,
@@ -106,9 +104,8 @@ void main() {
       });
 
       test('throws ImageDownloadException on HTTP client error', () async {
-        final coffeeImage = CoffeeImage.fromRemoteImage(
-          '1',
-          'https://example.com/image.jpg',
+        const coffeeImage = CoffeeImage(
+          file: 'https://example.com/image.jpg',
         );
 
         when(() => mockHttpClient.get(any()))
@@ -122,9 +119,8 @@ void main() {
 
       test('throws ImageDownloadServiceException on unexpected error',
           () async {
-        final coffeeImage = CoffeeImage.fromRemoteImage(
-          '1',
-          'https://example.com/image.jpg',
+        const coffeeImage = CoffeeImage(
+          file: 'https://example.com/image.jpg',
         );
 
         when(() => mockHttpClient.get(any())).thenThrow(Exception('Unexpected'));
@@ -136,9 +132,8 @@ void main() {
       });
 
       test('rethrows ImageDownloadServiceException', () async {
-        final coffeeImage = CoffeeImage.fromRemoteImage(
-          '1',
-          'https://example.com/image.jpg',
+        const coffeeImage = CoffeeImage(
+          file: 'https://example.com/image.jpg',
         );
 
         when(() => mockHttpClient.get(any())).thenThrow(
@@ -160,9 +155,8 @@ void main() {
           resolveBytes: (_) => customBytes,
         );
 
-        final coffeeImage = CoffeeImage.fromRemoteImage(
-          '1',
-          'https://example.com/image.jpg',
+        const coffeeImage = CoffeeImage(
+          file: 'https://example.com/image.jpg',
         );
         final response = HttpResponse(
           statusCode: 200,
@@ -183,9 +177,8 @@ void main() {
           isEmptyBytes: (_) => true,
         );
 
-        final coffeeImage = CoffeeImage.fromRemoteImage(
-          '1',
-          'https://example.com/image.jpg',
+        const coffeeImage = CoffeeImage(
+          file: 'https://example.com/image.jpg',
         );
         final bytes = Uint8List.fromList([1, 2, 3]);
         final response = HttpResponse(

@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:favorited_images_repository/favorited_images_repository.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:image_download_service/image_download_service.dart';
@@ -15,6 +17,13 @@ void main() {
     late MockLocalImageClient mockLocalImageClient;
     late FavoriteCoffeeRepositoryImpl repository;
 
+    setUpAll(() {
+      registerFallbackValue(Uri.parse('https://example.com/fallback.jpg'));
+      registerFallbackValue(
+        const CoffeeImage(file: 'https://example.com/image.jpg'),
+      );
+    });
+
     setUp(() {
       mockDownloadService = MockImageDownloadService();
       mockLocalImageClient = MockLocalImageClient();
@@ -22,28 +31,22 @@ void main() {
         imageDownloadService: mockDownloadService,
         localImageClient: mockLocalImageClient,
       );
-
-      registerFallbackValue(
-        CoffeeImage.fromRemoteImage('1', 'https://example.com/image.jpg'),
-      );
     });
 
     group('saveFavorite', () {
       test('saves a new favorite successfully', () async {
-        final coffeeImage = CoffeeImage.fromRemoteImage(
-          '1',
-          'https://example.com/image.jpg',
+        const coffeeImage = CoffeeImage(
+          file: 'https://example.com/image.jpg',
         );
         final downloadResult = ImageDownloadResult(
           sourceUri: Uri.parse('https://example.com/image.jpg'),
-          bytes: [1, 2, 3],
+          bytes: Uint8List.fromList([1, 2, 3]),
           contentType: 'image/jpeg',
         );
         final localImage = LocalImage(
           id: '1',
           source: Uri.parse('https://example.com/image.jpg'),
           filePath: '/path/to/image.jpg',
-          contentType: 'image/jpeg',
           savedAt: DateTime(2024, 1, 1),
         );
 
@@ -77,15 +80,13 @@ void main() {
 
       test('throws FavoriteCoffeeAlreadySavedException when image exists',
           () async {
-        final coffeeImage = CoffeeImage.fromRemoteImage(
-          '1',
-          'https://example.com/image.jpg',
+        const coffeeImage = CoffeeImage(
+          file: 'https://example.com/image.jpg',
         );
         final existingImage = LocalImage(
           id: '1',
           source: Uri.parse('https://example.com/image.jpg'),
           filePath: '/path/to/image.jpg',
-          contentType: 'image/jpeg',
           savedAt: DateTime(2024, 1, 1),
         );
 
@@ -100,9 +101,8 @@ void main() {
 
       test('throws FavoriteCoffeeRepositoryException on download failure',
           () async {
-        final coffeeImage = CoffeeImage.fromRemoteImage(
-          '1',
-          'https://example.com/image.jpg',
+        const coffeeImage = CoffeeImage(
+          file: 'https://example.com/image.jpg',
         );
 
         when(() => mockLocalImageClient.fetchImageBySource(any()))
@@ -118,13 +118,12 @@ void main() {
 
       test('throws FavoriteCoffeeRepositoryException on save failure',
           () async {
-        final coffeeImage = CoffeeImage.fromRemoteImage(
-          '1',
-          'https://example.com/image.jpg',
+        const coffeeImage = CoffeeImage(
+          file: 'https://example.com/image.jpg',
         );
         final downloadResult = ImageDownloadResult(
           sourceUri: Uri.parse('https://example.com/image.jpg'),
-          bytes: [1, 2, 3],
+          bytes: Uint8List.fromList([1, 2, 3]),
           contentType: 'image/jpeg',
         );
 
@@ -148,9 +147,8 @@ void main() {
 
       test('throws FavoriteCoffeeRepositoryException on unexpected error',
           () async {
-        final coffeeImage = CoffeeImage.fromRemoteImage(
-          '1',
-          'https://example.com/image.jpg',
+        const coffeeImage = CoffeeImage(
+          file: 'https://example.com/image.jpg',
         );
 
         when(() => mockLocalImageClient.fetchImageBySource(any()))
@@ -170,14 +168,12 @@ void main() {
             id: '1',
             source: Uri.parse('https://example.com/image1.jpg'),
             filePath: '/path/to/image1.jpg',
-            contentType: 'image/jpeg',
             savedAt: DateTime(2024, 1, 1),
           ),
           LocalImage(
             id: '2',
             source: Uri.parse('https://example.com/image2.jpg'),
             filePath: '/path/to/image2.jpg',
-            contentType: 'image/jpeg',
             savedAt: DateTime(2024, 1, 2),
           ),
         ];
@@ -232,7 +228,6 @@ void main() {
             id: '1',
             source: Uri.parse('https://example.com/image1.jpg'),
             filePath: '/path/to/image1.jpg',
-            contentType: 'image/jpeg',
             savedAt: DateTime(2024, 1, 1),
           ),
         ];
@@ -252,7 +247,6 @@ void main() {
             id: '1',
             source: Uri.parse('https://example.com/image1.jpg'),
             filePath: '/path/to/image1.jpg',
-            contentType: 'image/jpeg',
             savedAt: DateTime(2024, 1, 1),
           ),
         ];
@@ -314,8 +308,8 @@ void main() {
       test('uses custom mapper when provided', () async {
         final customMapper = (LocalImage image) => FavoriteCoffeeImage(
               id: 'custom-${image.id}',
-              sourceUri: image.source.toString(),
-              filePath: image.filePath,
+              sourceUrl: image.source.toString(),
+              localPath: image.filePath,
               savedAt: image.savedAt,
             );
 
@@ -330,7 +324,6 @@ void main() {
             id: '1',
             source: Uri.parse('https://example.com/image1.jpg'),
             filePath: '/path/to/image1.jpg',
-            contentType: 'image/jpeg',
             savedAt: DateTime(2024, 1, 1),
           ),
         ];
