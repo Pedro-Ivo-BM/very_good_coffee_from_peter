@@ -1,15 +1,12 @@
+import 'package:favorited_images_repository/favorited_images_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:http/http.dart' as http;
-import 'package:http_client/http_client.dart';
-import 'package:local_image_client/local_image_client.dart';
-import 'package:vgcfp_ui/vgcfp_ui.dart';
-import 'package:favorited_images_repository/favorited_images_repository.dart';
 import 'package:image_download_service/image_download_service.dart';
 import 'package:random_coffee_repository/random_coffee_repository.dart';
+import 'package:vgcfp_ui/vgcfp_ui.dart';
 import 'package:very_good_coffee_from_peter/app_router/app_router.dart';
-import 'package:very_good_coffee_from_peter/config/app_config.dart';
 import 'package:very_good_coffee_from_peter/favorite_coffees/bloc/favorite_coffees_cubit.dart';
+import 'package:very_good_coffee_from_peter/app/injector.dart';
 
 class App extends StatelessWidget {
   App({AppRouter? appRouter, super.key})
@@ -30,39 +27,21 @@ class _AppView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final httpClient = HttpClientImpl(httpClient: http.Client());
-
-    final randomCoffeeRemoteRepository = RandomCoffeeRemoteRepositoryImpl(
-      httpClient: httpClient,
-      apiUri: AppConfig.randomCoffeeApiUri,
-    );
-
-    final imageDownloadService = ImageDownloadServiceImpl(
-      httpClient: httpClient,
-    );
-
-    final localImageClient = LocalImageClientImpl();
-
-    final favoriteCoffeeRepository = FavoriteCoffeeRepositoryImpl(
-      imageDownloadService: imageDownloadService,
-      localImageClient: localImageClient,
-    );
-
     return MultiRepositoryProvider(
       providers: [
         RepositoryProvider<RandomCoffeeRemoteRepository>.value(
-          value: randomCoffeeRemoteRepository,
+          value: AppInjector.randomCoffeeRemoteRepository,
         ),
         RepositoryProvider<FavoriteCoffeeRepository>.value(
-          value: favoriteCoffeeRepository,
+          value: AppInjector.favoriteCoffeeRepository,
         ),
         RepositoryProvider<ImageDownloadService>.value(
-          value: imageDownloadService,
+          value: AppInjector.imageDownloadService,
         ),
       ],
       child: BlocProvider(
         create: (_) => FavoriteCoffeeCubit(
-          favoriteCoffeeRepository: favoriteCoffeeRepository,
+          favoriteCoffeeRepository: AppInjector.favoriteCoffeeRepository,
         )..fetchFavoriteCoffees(),
         child: MaterialApp.router(
           title: 'Very Good Gallery',
