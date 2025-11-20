@@ -84,7 +84,7 @@ Create an `env/` directory in the project root and add a file inside it (for exa
 
 ```json
 {
-  "RANDOM_COFFEE_API_BASE_URL": "https://fictional.coffee.api/v1/random"
+  "RANDOM_COFFEE_API_BASE_URL": "https://coffee.alexflipnote.dev/random.json" 
 }
 ```
 
