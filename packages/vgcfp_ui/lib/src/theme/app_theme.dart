@@ -2,9 +2,35 @@ import 'package:flutter/material.dart';
 import 'package:vgcfp_ui/src/theme/app_colors.dart';
 import 'package:vgcfp_ui/src/theme/typography/app_text_styles.dart';
 
+/// {@template app_theme}
 /// Provides configured [ThemeData] variants for the UI.
+///
+/// [AppTheme] defines the complete visual theme for the application,
+/// including color scheme, typography, component styles, and more.
+/// It uses Material 3 design and custom coffee-themed colors from
+/// [AppColors] and typography from [AppTextStyle].
+///
+/// The theme is designed to be consistent, accessible, and aligned
+/// with the app's coffee-inspired brand identity.
+///
+/// Usage:
+/// ```dart
+/// MaterialApp(
+///   theme: AppTheme.standard,
+///   home: MyHomePage(),
+/// )
+/// ```
+/// {@endtemplate}
 class AppTheme {
-  /// Standard `ThemeData` for App UI.
+  /// Standard [ThemeData] for the app UI.
+  ///
+  /// This theme includes:
+  /// - Material 3 design system
+  /// - Coffee-themed color scheme
+  /// - Custom typography using RobotoSlab font
+  /// - Styled app bars, buttons, and dialogs
+  ///
+  /// Apply this theme to [MaterialApp] to style the entire application.
   static ThemeData get standard {
     return ThemeData(
       useMaterial3: true,
@@ -16,6 +42,10 @@ class AppTheme {
     );
   }
 
+  /// Custom text theme using [AppTextStyle] definitions.
+  ///
+  /// Maps Material Design text styles to custom app text styles,
+  /// ensuring consistent typography throughout the application.
   static TextTheme get _textTheme {
     return TextTheme(
       displayLarge: AppTextStyle.displayLarge,
@@ -35,6 +65,11 @@ class AppTheme {
     );
   }
 
+  /// Custom color scheme using coffee-themed [AppColors].
+  ///
+  /// Defines all color roles for Material 3 components, ensuring
+  /// a consistent and accessible color system. Maps semantic color
+  /// roles (primary, secondary, surface, etc.) to app-specific colors.
   static ColorScheme get _colorScheme => ColorScheme(
     primary: AppColors.primary,
     onPrimary: AppColors.white,
@@ -57,6 +92,13 @@ class AppTheme {
     brightness: Brightness.light,
   );
 
+  /// Custom app bar theme with centered titles and flat design.
+  ///
+  /// Configures app bars with:
+  /// - Background matching the app background color
+  /// - Centered title with custom text style
+  /// - No elevation for a flat, modern look
+  /// - Dark coffee colored text and icons
   static AppBarTheme get _appBarTheme {
     return AppBarTheme(
       backgroundColor: AppColors.background,
@@ -71,6 +113,13 @@ class AppTheme {
     );
   }
 
+  /// Custom elevated button theme with rounded corners and no shadow.
+  ///
+  /// Configures buttons with:
+  /// - Primary brand color background
+  /// - Rounded pill shape (30px border radius)
+  /// - Consistent padding and minimum size
+  /// - Flat appearance (no elevation)
   static ElevatedButtonThemeData get _elevatedButtonTheme {
     return ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
@@ -85,6 +134,11 @@ class AppTheme {
     );
   }
 
+  /// Custom dialog theme with rounded corners and themed background.
+  ///
+  /// Configures dialogs with:
+  /// - Background color matching the app theme
+  /// - Slightly rounded corners (12px) for softer appearance
   static DialogThemeData get _dialogTheme {
     return DialogThemeData(
       backgroundColor: AppColors.background,
