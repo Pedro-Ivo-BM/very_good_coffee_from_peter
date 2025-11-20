@@ -8,17 +8,8 @@ abstract class HttpClient {
 
   void close();
 
-  Future<HttpResponse> get(
-    Uri uri, {
-    Map<String, String>? headers,
-  }) {
-    return send(
-      HttpRequest(
-        method: 'GET',
-        uri: uri,
-        headers: headers,
-      ),
-    );
+  Future<HttpResponse> get(Uri uri, {Map<String, String>? headers}) {
+    return send(HttpRequest(method: 'GET', uri: uri, headers: headers));
   }
 
   Future<HttpResponse> post(
@@ -27,12 +18,7 @@ abstract class HttpClient {
     Object? body,
   }) {
     return send(
-      HttpRequest(
-        method: 'POST',
-        uri: uri,
-        headers: headers,
-        body: body,
-      ),
+      HttpRequest(method: 'POST', uri: uri, headers: headers, body: body),
     );
   }
 }

@@ -34,12 +34,7 @@ class HttpResponseException extends HttpClientException {
     Object? cause,
     StackTrace? stackTrace,
     HttpRequest? request,
-  }) : super(
-          message,
-          cause: cause,
-          stackTrace: stackTrace,
-          request: request,
-        );
+  }) : super(message, cause: cause, stackTrace: stackTrace, request: request);
 
   final int statusCode;
   final String body;
