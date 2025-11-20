@@ -1,0 +1,23 @@
+name: favorited_images_repository
+description: Repository responsible for persisting favorite coffee images.
+version: 0.1.0
+publish_to: none
+
+environment:
+  sdk: ^3.9.2
+  flutter: ">=3.22.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  image_download_service:
+    path: ../image_download_service
+  local_image_client:
+    path: ../local_image_client
+  vgcfp_core:
+    path: ../vgcfp_core
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  very_good_analysis: ^6.0.0
