@@ -9,7 +9,7 @@ class AppRouter {
     bool debugLogDiagnostics = false,
   }) : router = GoRouter(
          navigatorKey: navigatorKey,
-         initialLocation: const CoffeeRouteData().location,
+         initialLocation: const SplashRouteData().location,
          debugLogDiagnostics: debugLogDiagnostics,
          routes: $appRoutes,
        );
