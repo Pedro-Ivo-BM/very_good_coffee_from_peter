@@ -65,7 +65,7 @@ class CoffeeCubit extends Cubit<CoffeeState> {
       emit(
         state.copyWith(
           status: CoffeeStatus.failure,
-          errorMessage: 'Erro ao carregar café: $error',
+          errorMessage: 'Failed to load coffee: $error',
         ),
       );
     }
@@ -89,7 +89,7 @@ class CoffeeCubit extends Cubit<CoffeeState> {
       emit(
         state.copyWith(
           saveStatus: CoffeeSaveStatus.failure,
-          saveErrorMessage: 'Erro ao salvar favorito: $error',
+          saveErrorMessage: 'Failed to save favorite: $error',
         ),
       );
     }

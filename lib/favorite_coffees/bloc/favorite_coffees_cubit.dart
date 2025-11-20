@@ -69,7 +69,7 @@ class FavoritesCubit extends Cubit<FavoritesState> {
       emit(
         state.copyWith(
           status: FavoritesStatus.failure,
-          errorMessage: 'Erro ao carregar favoritos: $error',
+          errorMessage: 'Failed to load favorites: $error',
         ),
       );
     }
@@ -92,14 +92,14 @@ class FavoritesCubit extends Cubit<FavoritesState> {
               ? FavoritesStatus.empty
               : FavoritesStatus.success,
           actionStatus: FavoritesActionStatus.success,
-          actionMessage: 'Favorito removido com sucesso!',
+          actionMessage: 'Favorite removed successfully!',
         ),
       );
     } catch (error) {
       emit(
         state.copyWith(
           actionStatus: FavoritesActionStatus.failure,
-          actionMessage: 'Erro ao deletar favorito: $error',
+          actionMessage: 'Failed to delete favorite: $error',
         ),
       );
     }

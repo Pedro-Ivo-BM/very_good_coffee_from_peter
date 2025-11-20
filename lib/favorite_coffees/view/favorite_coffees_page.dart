@@ -64,7 +64,7 @@ class _FavoritesView extends StatelessWidget {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Cafés Favoritos'),
+          title: const Text('Favorite Coffees'),
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         ),
         body: BlocBuilder<FavoritesCubit, FavoritesState>(
@@ -178,7 +178,7 @@ class _FavoritesView extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Salvo em:',
+                    'Saved on:',
                     style: Theme.of(context).textTheme.labelSmall,
                   ),
                   Text(
@@ -197,7 +197,7 @@ class _FavoritesView extends StatelessWidget {
   String _formatDate(DateTime date) {
     return '${date.day.toString().padLeft(2, '0')}/'
         '${date.month.toString().padLeft(2, '0')}/'
-        '${date.year} às '
+        '${date.year} at '
         '${date.hour.toString().padLeft(2, '0')}:'
         '${date.minute.toString().padLeft(2, '0')}';
   }
@@ -215,14 +215,14 @@ class _EmptyFavoritesView extends StatelessWidget {
           Icon(Icons.coffee_outlined, size: 64, color: Colors.grey[400]),
           const SizedBox(height: 16),
           Text(
-            'Nenhum café favorito ainda',
+            'No favorite coffees yet',
             style: Theme.of(
               context,
             ).textTheme.titleMedium?.copyWith(color: Colors.grey[600]),
           ),
           const SizedBox(height: 8),
           Text(
-            'Volte e salve alguns cafés!',
+            'Head back and save a few brews!',
             style: Theme.of(
               context,
             ).textTheme.bodyMedium?.copyWith(color: Colors.grey[500]),
@@ -247,14 +247,14 @@ class _ErrorView extends StatelessWidget {
           const Icon(Icons.error_outline, size: 48, color: Colors.red),
           const SizedBox(height: 12),
           Text(
-            'Não foi possível carregar os favoritos.',
+            'We could not load your favorites.',
             style: Theme.of(context).textTheme.bodyMedium,
           ),
           const SizedBox(height: 16),
           FilledButton.icon(
             onPressed: onRetry,
             icon: const Icon(Icons.refresh),
-            label: const Text('Tentar novamente'),
+            label: const Text('Try again'),
           ),
         ],
       ),

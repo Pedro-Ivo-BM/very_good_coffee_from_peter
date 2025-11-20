@@ -54,7 +54,7 @@ class _CoffeeView extends StatelessWidget {
         if (state.saveStatus == CoffeeSaveStatus.success) {
           messenger.showSnackBar(
             const SnackBar(
-              content: Text('Café salvo como favorito!'),
+              content: Text('Coffee saved to favorites!'),
               backgroundColor: Colors.green,
               duration: Duration(seconds: 2),
             ),
@@ -78,7 +78,7 @@ class _CoffeeView extends StatelessWidget {
           actions: [
             IconButton(
               icon: const Icon(Icons.favorite),
-              tooltip: 'Ver favoritos',
+              tooltip: 'View favorites',
               onPressed: () => _navigateToFavorites(context),
             ),
           ],
@@ -154,7 +154,9 @@ class _CoffeeView extends StatelessWidget {
                                   )
                                 : const Icon(Icons.favorite),
                             label: Text(
-                              isSaving ? 'Salvando...' : 'Salvar como Favorito',
+                              isSaving
+                                  ? 'Saving...'
+                                  : 'Save to Favorites',
                             ),
                             style: ElevatedButton.styleFrom(
                               padding: const EdgeInsets.symmetric(
@@ -171,7 +173,7 @@ class _CoffeeView extends StatelessWidget {
                                       .read<CoffeeCubit>()
                                       .loadRandomCoffee(),
                             icon: const Icon(Icons.refresh),
-                            label: const Text('Nova Imagem'),
+                            label: const Text('New Image'),
                             style: ElevatedButton.styleFrom(
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 24,
@@ -186,7 +188,7 @@ class _CoffeeView extends StatelessWidget {
                 );
               }
 
-              return const Text('Nenhuma imagem carregada');
+              return const Text('No image loaded');
             },
           ),
         ),
