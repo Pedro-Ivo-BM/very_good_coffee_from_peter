@@ -14,10 +14,10 @@ class LocalImageClientImpl extends LocalImageClient {
     Future<Directory> Function()? documentsDirectoryBuilder,
     LocalImageIndexStore? indexStore,
     Uuid? uuid,
-  })  : _documentsDirectoryBuilder =
-            documentsDirectoryBuilder ?? getApplicationDocumentsDirectory,
-        _indexStore = indexStore ?? LocalImageIndexStore(),
-        _uuid = uuid ?? const Uuid();
+  }) : _documentsDirectoryBuilder =
+           documentsDirectoryBuilder ?? getApplicationDocumentsDirectory,
+       _indexStore = indexStore ?? LocalImageIndexStore(),
+       _uuid = uuid ?? const Uuid();
 
   final Future<Directory> Function() _documentsDirectoryBuilder;
   final LocalImageIndexStore _indexStore;
@@ -30,8 +30,9 @@ class LocalImageClientImpl extends LocalImageClient {
   Future<void> _ensureInitialized() async {
     if (_initialized) return;
     final documentsDirectory = await _documentsDirectoryBuilder();
-    final imagesDirectory =
-      Directory(p.join(documentsDirectory.path, 'local_images'));
+    final imagesDirectory = Directory(
+      p.join(documentsDirectory.path, 'local_images'),
+    );
     if (!await imagesDirectory.exists()) {
       await imagesDirectory.create(recursive: true);
     }

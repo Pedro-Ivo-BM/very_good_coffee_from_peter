@@ -35,8 +35,10 @@ class LocalImageIndexStore {
       }
       final decoded = jsonDecode(contents) as List<dynamic>;
       return decoded
-          .map((dynamic entry) =>
-              LocalImage.fromJson(entry as Map<String, dynamic>))
+          .map(
+            (dynamic entry) =>
+                LocalImage.fromJson(entry as Map<String, dynamic>),
+          )
           .toList();
     } on Exception catch (error) {
       throw LocalImagePersistenceException(
