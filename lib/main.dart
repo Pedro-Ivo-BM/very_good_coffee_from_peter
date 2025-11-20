@@ -6,15 +6,17 @@ import 'package:very_good_coffee_from_peter/app/app.dart';
 import 'package:very_good_coffee_from_peter/app/app_bloc_observer.dart';
 
 Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  Bloc.observer = const AppBlocObserver();
+  runZonedGuarded(() async {
+    WidgetsFlutterBinding.ensureInitialized();
+    Bloc.observer = const AppBlocObserver();
 
-  FlutterError.onError = (details) {
-    debugPrint(details.exceptionAsString());
-    debugPrintStack(stackTrace: details.stack);
-  };
+    FlutterError.onError = (details) {
+      debugPrint(details.exceptionAsString());
+      debugPrintStack(stackTrace: details.stack);
+    };
 
-  runZonedGuarded(() => runApp(App()), (error, stackTrace) {
+    runApp(App());
+  }, (error, stackTrace) {
     debugPrint(error.toString());
     debugPrintStack(stackTrace: stackTrace);
   });
