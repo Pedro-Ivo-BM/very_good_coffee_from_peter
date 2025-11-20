@@ -6,19 +6,19 @@ part of 'routes.dart';
 // GoRouterGenerator
 // **************************************************************************
 
-List<RouteBase> get $appRoutes => [$startRouteData];
+List<RouteBase> get $appRoutes => [$coffeeRouteData, $favoritesRouteData];
 
-RouteBase get $startRouteData => GoRouteData.$route(
-  path: '/',
-  factory: $StartRouteData._fromState,
-  routes: [
-    GoRouteData.$route(path: 'gallery', factory: $GalleryRouteData._fromState),
-  ],
+RouteBase get $coffeeRouteData =>
+    GoRouteData.$route(path: '/', factory: $CoffeeRouteData._fromState);
+
+RouteBase get $favoritesRouteData => GoRouteData.$route(
+  path: '/favorites',
+  factory: $FavoritesRouteData._fromState,
 );
 
-mixin $StartRouteData on GoRouteData {
-  static StartRouteData _fromState(GoRouterState state) =>
-      const StartRouteData();
+mixin $CoffeeRouteData on GoRouteData {
+  static CoffeeRouteData _fromState(GoRouterState state) =>
+      const CoffeeRouteData();
 
   @override
   String get location => GoRouteData.$location('/');
@@ -37,12 +37,12 @@ mixin $StartRouteData on GoRouteData {
   void replace(BuildContext context) => context.replace(location);
 }
 
-mixin $GalleryRouteData on GoRouteData {
-  static GalleryRouteData _fromState(GoRouterState state) =>
-      const GalleryRouteData();
+mixin $FavoritesRouteData on GoRouteData {
+  static FavoritesRouteData _fromState(GoRouterState state) =>
+      const FavoritesRouteData();
 
   @override
-  String get location => GoRouteData.$location('/gallery');
+  String get location => GoRouteData.$location('/favorites');
 
   @override
   void go(BuildContext context) => context.go(location);

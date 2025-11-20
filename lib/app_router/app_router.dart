@@ -8,11 +8,11 @@ class AppRouter {
     GlobalKey<NavigatorState>? navigatorKey,
     bool debugLogDiagnostics = false,
   }) : router = GoRouter(
-          navigatorKey: navigatorKey,
-          initialLocation: const StartRouteData().location,
-          debugLogDiagnostics: debugLogDiagnostics,
-          routes: $appRoutes,
-        );
+         navigatorKey: navigatorKey,
+         initialLocation: const CoffeeRouteData().location,
+         debugLogDiagnostics: debugLogDiagnostics,
+         routes: $appRoutes,
+       );
 
   /// Shared router instance ready for MaterialApp.router.
   final GoRouter router;
