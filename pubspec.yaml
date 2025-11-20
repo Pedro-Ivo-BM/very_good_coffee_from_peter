@@ -32,14 +32,21 @@ dependencies:
     sdk: flutter
   flutter_bloc: ^9.1.1
   go_router: ^16.2.2
+  http: ^1.6.0
   http_client:
     path: packages/http_client
   local_image_client:
     path: packages/local_image_client
+  favorited_images_repository:
+    path: packages/favorited_images_repository
+  image_download_service:
+    path: packages/image_download_service
   vgcfp_core:
     path: packages/vgcfp_core
   vgcfp_ui:
     path: packages/vgcfp_ui
+  random_coffee_repository:
+    path: packages/random_coffee_repository
 
 dev_dependencies:
   flutter_test:

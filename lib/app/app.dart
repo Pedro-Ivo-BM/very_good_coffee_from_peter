@@ -1,5 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:http/http.dart' as http;
+import 'package:http_client/http_client.dart';
+import 'package:local_image_client/local_image_client.dart';
 import 'package:very_good_coffee_from_peter/app_router/app_router.dart';
+import 'package:favorited_images_repository/favorited_images_repository.dart';
+import 'package:image_download_service/image_download_service.dart';
+import 'package:random_coffee_repository/random_coffee_repository.dart';
 
 class App extends StatelessWidget {
   App({AppRouter? appRouter, super.key})
@@ -20,13 +27,43 @@ class _AppView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      title: 'Very Good Gallery',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.brown),
-        useMaterial3: true,
+    final httpClient = HttpClientImpl(httpClient: http.Client());
+
+    final coffeeRemoteRepository = CoffeeRemoteRepositoryImpl(
+      httpClient: httpClient,
+    );
+
+    final imageDownloadService = ImageDownloadServiceImpl(
+      httpClient: httpClient,
+    );
+
+    final localImageClient = LocalImageClientImpl();
+
+    final favoriteCoffeeRepository = FavoriteCoffeeRepositoryImpl(
+      imageDownloadService: imageDownloadService,
+      localImageClient: localImageClient,
+    );
+
+    return MultiRepositoryProvider(
+      providers: [
+        RepositoryProvider<CoffeeRemoteRepository>.value(
+          value: coffeeRemoteRepository,
+        ),
+        RepositoryProvider<FavoriteCoffeeRepository>.value(
+          value: favoriteCoffeeRepository,
+        ),
+        RepositoryProvider<ImageDownloadService>.value(
+          value: imageDownloadService,
+        ),
+      ],
+      child: MaterialApp.router(
+        title: 'Very Good Gallery',
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.brown),
+          useMaterial3: true,
+        ),
+        routerConfig: _appRouter.router,
       ),
-      routerConfig: _appRouter.router,
     );
   }
 }
