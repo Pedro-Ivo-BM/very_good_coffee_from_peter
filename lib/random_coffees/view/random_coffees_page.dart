@@ -4,19 +4,31 @@ import 'package:favorited_images_repository/favorited_images_repository.dart';
 import 'package:random_coffee_repository/random_coffee_repository.dart';
 import 'package:very_good_coffee_from_peter/favorite_coffees/bloc/favorite_coffees_cubit.dart';
 import 'package:very_good_coffee_from_peter/random_coffees/bloc/random_coffees_cubit.dart';
+import 'package:very_good_coffee_from_peter/random_coffees/widgets/coffee_action_buttons.dart';
+import 'package:very_good_coffee_from_peter/random_coffees/widgets/coffee_image_card.dart';
+import 'package:very_good_coffee_from_peter/random_coffees/widgets/empty_coffee_state.dart';
 import 'package:very_good_coffee_from_peter/widgets/dialogs/offline_connectivity_dialog.dart';
 import 'package:very_good_coffee_from_peter/widgets/dialogs/reconnected_connectivity_dialog.dart';
 import 'package:very_good_coffee_from_peter/widgets/snackbars/app_snack_bars.dart';
 import 'package:vgcfp_ui/vgcfp_ui.dart';
 
+/// Page displaying random coffee images.
+///
+/// Allows users to view random coffee images, save them to favorites,
+/// and load new random images. Handles connectivity status and
+/// displays appropriate dialogs and snackbars.
 class RandomCoffeePage extends StatelessWidget {
+  /// Creates a random coffee page.
   const RandomCoffeePage({
     required this.randomCoffeeRemoteRepository,
     required this.favoriteCoffeeRepository,
     super.key,
   });
 
+  /// Repository for fetching random coffee images.
   final RandomCoffeeRemoteRepository randomCoffeeRemoteRepository;
+
+  /// Repository for managing favorite coffee images.
   final FavoriteCoffeeRepository favoriteCoffeeRepository;
 
   @override
@@ -93,24 +105,6 @@ class _RandomCoffeeViewState extends State<_RandomCoffeeView> {
             final isSaving = state.saveStatus == RandomCoffeeSaveStatus.saving;
             final isLoading = state.status == RandomCoffeeStatus.loading;
             final isConnected = state.isConnected;
-            final buttonTextStyle = context.textTheme.labelLarge?.copyWith(
-              color: context.colorScheme.surface,
-            );
-            final secondaryButtonTextStyle = context.textTheme.labelLarge
-                ?.copyWith(color: context.colorScheme.primary);
-            final buttonStyle = ElevatedButton.styleFrom(
-              alignment: Alignment.center,
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-              minimumSize: const Size.fromHeight(52),
-            );
-            final secondaryButtonStyle = buttonStyle.copyWith(
-              backgroundColor: const WidgetStatePropertyAll<Color>(
-                AppColors.steamedMilk,
-              ),
-              foregroundColor: WidgetStatePropertyAll<Color>(
-                context.colorScheme.primary,
-              ),
-            );
 
             body = Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -129,51 +123,11 @@ class _RandomCoffeeViewState extends State<_RandomCoffeeView> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
-                            Card(
-                              clipBehavior: Clip.antiAlias,
-                              child: InkWell(
-                                onTap: () => _showFullImage(
-                                  context,
-                                  state.randomCoffee!.file,
-                                ),
-                                child: Image.network(
-                                  state.randomCoffee!.file,
-                                  fit: BoxFit.cover,
-                                  loadingBuilder:
-                                      (context, child, loadingProgress) {
-                                        if (loadingProgress == null)
-                                          return child;
-                                        return SizedBox(
-                                          height: 300,
-                                          child: Center(
-                                            child: CircularProgressIndicator(
-                                              value:
-                                                  loadingProgress
-                                                          .expectedTotalBytes !=
-                                                      null
-                                                  ? loadingProgress
-                                                            .cumulativeBytesLoaded /
-                                                        loadingProgress
-                                                            .expectedTotalBytes!
-                                                  : null,
-                                            ),
-                                          ),
-                                        );
-                                      },
-                                  errorBuilder: (context, error, stackTrace) {
-                                    return Container(
-                                      height: 300,
-                                      color: Colors.grey[300],
-                                      child: const Center(
-                                        child: Icon(
-                                          Icons.error_outline,
-                                          size: 48,
-                                          color: Colors.red,
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                ),
+                            CoffeeImageCard(
+                              imageUrl: state.randomCoffee!.file,
+                              onTap: () => _showFullImageDialog(
+                                context,
+                                state.randomCoffee!.file,
                               ),
                             ),
                             const SizedBox(height: 24),
@@ -186,141 +140,43 @@ class _RandomCoffeeViewState extends State<_RandomCoffeeView> {
               ],
             );
 
-            bottomNavigation = SafeArea(
-              minimum: const EdgeInsets.fromLTRB(16, 16, 16, 80),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  const SizedBox(height: 16),
-                  ElevatedButton.icon(
-                    onPressed: isSaving
-                        ? null
-                        : () {
-                            if (!isConnected) {
-                              _showOfflineDialog(
-                                additionalMessage:
-                                    'Unable to download the image.',
-                              );
-                              return;
-                            }
-                            context.read<RandomCoffeeCubit>().saveFavorite();
-                          },
-                    icon: isSaving
-                        ? SizedBox(
-                            width: 16,
-                            height: 16,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              color: context.colorScheme.surface,
-                            ),
-                          )
-                        : Icon(
-                            Icons.favorite,
-                            color: context.colorScheme.surface,
-                          ),
-                    label: Text(
-                      isSaving ? 'Saving...' : 'Save to Favorites',
-                      style: buttonTextStyle,
-                      textAlign: TextAlign.center,
-                    ),
-                    style: buttonStyle,
-                  ),
-                  const SizedBox(height: 16),
-                  ElevatedButton.icon(
-                    onPressed: isLoading
-                        ? null
-                        : () {
-                            if (!isConnected) {
-                              _showOfflineDialog(
-                                additionalMessage:
-                                    'Unable to load a new image.',
-                              );
-                              return;
-                            }
-                            context
-                                .read<RandomCoffeeCubit>()
-                                .loadRandomCoffee();
-                          },
-                    icon: Icon(
-                      Icons.refresh,
-                      color: context.colorScheme.primary,
-                    ),
-                    label: Text(
-                      'New Image',
-                      style: secondaryButtonTextStyle,
-                      textAlign: TextAlign.center,
-                    ),
-                    style: secondaryButtonStyle,
-                  ),
-                ],
-              ),
+            bottomNavigation = CoffeeActionButtons(
+              onSaveFavorite: () {
+                if (!isConnected) {
+                  _showOfflineDialog(
+                    additionalMessage: 'Unable to download the image.',
+                  );
+                  return;
+                }
+                context.read<RandomCoffeeCubit>().saveFavorite();
+              },
+              onLoadNewImage: () {
+                if (!isConnected) {
+                  _showOfflineDialog(
+                    additionalMessage: 'Unable to load a new image.',
+                  );
+                  return;
+                }
+                context.read<RandomCoffeeCubit>().loadRandomCoffee();
+              },
+              isSaving: isSaving,
+              isLoading: isLoading,
             );
           } else {
             final isLoading = state.status == RandomCoffeeStatus.loading;
             final isConnected = state.isConnected;
-            final secondaryButtonTextStyle = context.textTheme.labelLarge
-                ?.copyWith(color: context.colorScheme.primary);
-            final secondaryButtonStyle = ElevatedButton.styleFrom(
-              alignment: Alignment.center,
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-              minimumSize: const Size.fromHeight(52),
-              backgroundColor: AppColors.steamedMilk,
-              foregroundColor: context.colorScheme.primary,
-            );
 
-            body = Padding(
-              padding: const EdgeInsets.all(24),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  const Icon(
-                    Icons.coffee,
-                    size: 64,
-                    color: AppColors.steamedMilk,
-                  ),
-                  const SizedBox(height: 24),
-                  Text(
-                    'No image loaded',
-                    style: context.textTheme.titleMedium,
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Tap the button below to add a new random coffee image.',
-                    style: context.textTheme.bodyMedium,
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 32),
-                  ElevatedButton.icon(
-                    onPressed: isLoading
-                        ? null
-                        : () {
-                            if (!isConnected) {
-                              _showOfflineDialog(
-                                additionalMessage:
-                                    'Unable to load a new image.',
-                              );
-                              return;
-                            }
-                            context
-                                .read<RandomCoffeeCubit>()
-                                .loadRandomCoffee();
-                          },
-                    icon: Icon(
-                      Icons.refresh,
-                      color: context.colorScheme.primary,
-                    ),
-                    label: Text(
-                      isLoading ? 'Loading...' : 'New Image',
-                      style: secondaryButtonTextStyle,
-                      textAlign: TextAlign.center,
-                    ),
-                    style: secondaryButtonStyle,
-                  ),
-                ],
-              ),
+            body = EmptyCoffeeState(
+              onLoadImage: () {
+                if (!isConnected) {
+                  _showOfflineDialog(
+                    additionalMessage: 'Unable to load a new image.',
+                  );
+                  return;
+                }
+                context.read<RandomCoffeeCubit>().loadRandomCoffee();
+              },
+              isLoading: isLoading,
             );
           }
 
@@ -334,7 +190,10 @@ class _RandomCoffeeViewState extends State<_RandomCoffeeView> {
     );
   }
 
-  Future<void> _showFullImage(BuildContext context, String imageUrl) async {
+  Future<void> _showFullImageDialog(
+    BuildContext context,
+    String imageUrl,
+  ) async {
     final colorScheme = Theme.of(context).colorScheme;
     await showDialog<void>(
       context: context,

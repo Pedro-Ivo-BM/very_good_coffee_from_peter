@@ -1,10 +1,17 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:very_good_coffee_from_peter/splash/widgets/steam_animation.dart';
 
+/// Splash screen displayed when the app launches.
+///
+/// Shows an animated coffee icon with steam for 5 seconds
+/// before calling {onFinished}.
 class SplashPage extends StatefulWidget {
+  /// Creates a splash page.
   const SplashPage({required this.onFinished, super.key});
 
+  /// Callback triggered when the splash duration is complete.
   final VoidCallback onFinished;
 
   @override
@@ -76,7 +83,7 @@ class _SplashPageState extends State<SplashPage>
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              _SteamRow(
+              SteamRow(
                 leftAnimation: _steamOne,
                 rightAnimation: _steamTwo,
                 color: onPrimary.withValues(alpha: 0.75),
@@ -117,90 +124,11 @@ class _SplashPageState extends State<SplashPage>
                 'Brewing a fresh cup...',
                 style: Theme.of(context)
                     .textTheme
-                  .bodyMedium
-                  ?.copyWith(color: onPrimary.withValues(alpha: 0.9)),
+                    .bodyMedium
+                    ?.copyWith(color: onPrimary.withValues(alpha: 0.9)),
               ),
             ],
           ),
-        ),
-      ),
-    );
-  }
-}
-
-class _SteamRow extends StatelessWidget {
-  const _SteamRow({
-    required this.leftAnimation,
-    required this.rightAnimation,
-    required this.color,
-  });
-
-  final Animation<double> leftAnimation;
-  final Animation<double> rightAnimation;
-  final Color color;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        _SteamPuff(
-          animation: leftAnimation,
-          color: color,
-          horizontalDrift: -1,
-        ),
-        const SizedBox(width: 16),
-        _SteamPuff(
-          animation: rightAnimation,
-          color: color,
-          horizontalDrift: 1,
-        ),
-      ],
-    );
-  }
-}
-
-class _SteamPuff extends StatelessWidget {
-  const _SteamPuff({
-    required this.animation,
-    required this.color,
-    required this.horizontalDrift,
-  });
-
-  final Animation<double> animation;
-  final Color color;
-  final double horizontalDrift;
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: 36,
-      height: 80,
-      child: AnimatedBuilder(
-        animation: animation,
-        builder: (context, child) {
-          final value = animation.value;
-          final horizontalOffset = horizontalDrift * 10 * (value - 0.5);
-          return Align(
-            alignment: Alignment.bottomCenter,
-            child: Transform.translate(
-              offset: Offset(horizontalOffset, -36 * value),
-              child: Transform.scale(
-                scale: 0.9 + (1 - value) * 0.15,
-                child: Opacity(
-                  opacity: 0.35 + (1 - value) * 0.5,
-                  child: child,
-                ),
-              ),
-            ),
-          );
-        },
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            color: color,
-            borderRadius: const BorderRadius.all(Radius.circular(32)),
-          ),
-          child: const SizedBox(width: 12, height: 36),
         ),
       ),
     );
