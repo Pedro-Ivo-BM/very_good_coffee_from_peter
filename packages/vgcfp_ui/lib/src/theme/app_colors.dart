@@ -15,7 +15,7 @@ abstract class AppColors {
   static const Color softHighlight = Color(0xFFA77960);
 
   /// Error indicator accent (vibrant red)
-  static const Color red = Color(0xFFF44336);
+  static const Color red = Color(0xFF7C2D32);
 
   /// Pure white
   static const Color white = Color(0xFFFFFFFF);
@@ -70,4 +70,6 @@ abstract class AppColors {
 
   /// Smooth cream (near-white cream)
   static const Color smoothCream = Color(0xFFEDE0D4);
+
+  static const Color greenOlive = Color(0xFF5E6D55);
 }

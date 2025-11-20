@@ -101,6 +101,14 @@ class AppTextStyle {
     height: 1.3,
   );
 
+  /// bodySmall - Small secondary text
+  static final TextStyle bodySmallBold = _baseTextStyle.copyWith(
+    fontSize: 12.0,
+    fontWeight: AppFontWeight.bold,
+    color: AppColors.primary,
+    height: 1.3,
+  );
+
   /// labelLarge - Primary button text
   static final TextStyle labelLarge = _baseTextStyle.copyWith(
     fontSize: 16.0,

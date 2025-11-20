@@ -1,4 +1,4 @@
-import 'local_image.dart';
+import 'models/local_image.dart';
 
 abstract class LocalImageClient {
   const LocalImageClient();
@@ -10,6 +10,8 @@ abstract class LocalImageClient {
   });
 
   Future<List<LocalImage>> fetchImages();
+
+  Future<LocalImage?> fetchImageBySource(Uri source);
 
   Future<void> deleteImage(String id);
 

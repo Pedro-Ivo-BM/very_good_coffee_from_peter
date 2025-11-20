@@ -9,13 +9,36 @@ import 'http_logger.dart';
 import 'http_request.dart';
 import 'http_response.dart';
 
+typedef HttpResponseFactory = HttpResponse Function(http.Response response);
+
 class HttpClientImpl extends HttpClient {
-  HttpClientImpl({http.Client? httpClient, HttpLogger? logger})
-    : _httpClient = httpClient ?? http.Client(),
-      _logger = logger ?? const DeveloperHttpLogger();
+  HttpClientImpl({
+    http.Client? httpClient,
+    HttpLogger? logger,
+    HttpResponseFactory? responseFactory,
+  }) : _httpClient = httpClient ?? http.Client(),
+       _logger = logger ?? const DeveloperHttpLogger(),
+       _responseFactory = responseFactory ?? _defaultResponseFactory;
 
   final http.Client _httpClient;
   final HttpLogger _logger;
+  final HttpResponseFactory _responseFactory;
+
+  static HttpResponse _defaultResponseFactory(http.Response response) {
+    final contentType = response.headers['content-type']?.toLowerCase() ?? '';
+    final isBinary =
+        contentType.startsWith('image/') ||
+        contentType.startsWith('application/octet-stream') ||
+        contentType.startsWith('video/') ||
+        contentType.startsWith('audio/');
+
+    return HttpResponse(
+      statusCode: response.statusCode,
+      body: isBinary ? '' : response.body,
+      headers: response.headers,
+      bodyBytes: response.bodyBytes,
+    );
+  }
 
   @override
   Future<HttpResponse> send(HttpRequest request) async {
@@ -73,22 +96,8 @@ class HttpClientImpl extends HttpClient {
         httpResponse = await http.Response.fromStream(streamedResponse);
       }
 
-      // Verifica se é conteúdo binário
-      final contentType =
-          httpResponse.headers['content-type']?.toLowerCase() ?? '';
-      final isBinary =
-          contentType.startsWith('image/') ||
-          contentType.startsWith('application/octet-stream') ||
-          contentType.startsWith('video/') ||
-          contentType.startsWith('audio/');
-
       // Cria nosso HttpResponse customizado
-      final response = HttpResponse(
-        statusCode: httpResponse.statusCode,
-        body: isBinary ? '' : httpResponse.body,
-        headers: httpResponse.headers,
-        bodyBytes: httpResponse.bodyBytes,
-      );
+      final response = _responseFactory(httpResponse);
 
       _logger.response(response);
 

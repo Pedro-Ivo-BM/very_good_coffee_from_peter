@@ -4,7 +4,7 @@ import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
 
-import 'local_image.dart';
+import 'models/local_image.dart';
 import 'local_image_client.dart';
 import 'local_image_client_exceptions.dart';
 import 'local_image_index_store.dart';
@@ -14,14 +14,27 @@ class LocalImageClientImpl extends LocalImageClient {
     Future<Directory> Function()? documentsDirectoryBuilder,
     LocalImageIndexStore? indexStore,
     Uuid? uuid,
+    DateTime Function()? now,
+    Future<File> Function(File file, List<int> bytes)? writeBytes,
   }) : _documentsDirectoryBuilder =
            documentsDirectoryBuilder ?? getApplicationDocumentsDirectory,
        _indexStore = indexStore ?? LocalImageIndexStore(),
-       _uuid = uuid ?? const Uuid();
+       _uuid = uuid ?? const Uuid(),
+       _now = now ?? _defaultNow,
+       _writeBytes = writeBytes ?? _defaultWriteBytes;
 
   final Future<Directory> Function() _documentsDirectoryBuilder;
   final LocalImageIndexStore _indexStore;
   final Uuid _uuid;
+  final DateTime Function() _now;
+  final Future<File> Function(File file, List<int> bytes) _writeBytes;
+
+  static DateTime _defaultNow() => DateTime.now().toUtc();
+
+  static Future<File> _defaultWriteBytes(File file, List<int> bytes) async {
+    await file.writeAsBytes(bytes);
+    return file;
+  }
 
   Directory? _rootDirectory;
   List<LocalImage> _cache = const [];
@@ -60,7 +73,7 @@ class LocalImageClientImpl extends LocalImageClient {
       id: id,
       source: source,
       filePath: file.path,
-      savedAt: DateTime.now().toUtc(),
+      savedAt: _now(),
     );
     _cache = List<LocalImage>.from(_cache)..add(record);
     await _indexStore.writeAll(_cache);
@@ -71,6 +84,16 @@ class LocalImageClientImpl extends LocalImageClient {
   Future<List<LocalImage>> fetchImages() async {
     await _ensureInitialized();
     return List<LocalImage>.unmodifiable(_cache);
+  }
+
+  @override
+  Future<LocalImage?> fetchImageBySource(Uri source) async {
+    await _ensureInitialized();
+    try {
+      return _cache.firstWhere((image) => image.source == source);
+    } on StateError {
+      return null;
+    }
   }
 
   @override
@@ -104,7 +127,7 @@ class LocalImageClientImpl extends LocalImageClient {
     final fileName = '$id$extension';
     final file = File(p.join(_rootDirectory!.path, fileName));
     try {
-      await file.writeAsBytes(bytes);
+      await _writeBytes(file, bytes);
       return file;
     } on Exception catch (error) {
       throw LocalImagePersistenceException(

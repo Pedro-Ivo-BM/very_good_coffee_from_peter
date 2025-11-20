@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:path/path.dart' as p;
 
-import 'local_image.dart';
+import 'models/local_image.dart';
 import 'local_image_client_exceptions.dart';
 
 class LocalImageIndexStore {
