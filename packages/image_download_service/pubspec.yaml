@@ -1,0 +1,21 @@
+name: image_download_service
+description: Image download abstraction backed by the shared HTTP client.
+version: 0.1.0
+publish_to: none
+
+environment:
+  sdk: ^3.9.2
+  flutter: ">=3.22.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  http_client:
+    path: ../http_client
+  vgcfp_core:
+    path: ../vgcfp_core
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  very_good_analysis: ^6.0.0
