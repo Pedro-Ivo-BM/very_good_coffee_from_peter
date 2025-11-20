@@ -137,26 +137,26 @@ class AppTheme {
   }
 
   static ColorScheme get _colorScheme => ColorScheme(
-        primary: AppColors.primary,
-        onPrimary: AppColors.white,
-        secondary: AppColors.signaturePrimary,
-        onSecondary: AppColors.white,
-        surface: AppColors.background,
-        onSurface: AppColors.darkCoffee,
-        surfaceContainerHighest: AppColors.smoothCream,
-        onSurfaceVariant: AppColors.mediumCoffee,
-        error: AppColors.red,
-        onError: AppColors.white,
-        primaryContainer: AppColors.creamyFoam,
-        onPrimaryContainer: AppColors.darkCoffee,
-        secondaryContainer: AppColors.steamedMilk,
-        onSecondaryContainer: AppColors.darkCoffee,
-        outline: AppColors.softHighlight,
-        outlineVariant: AppColors.steamedMilk,
-        shadow: AppColors.darkBackground.withValues(alpha: 0.3),
-        scrim: AppColors.darkBackground.withValues(alpha: 0.5),
-        brightness: Brightness.light,
-      );
+    primary: AppColors.primary,
+    onPrimary: AppColors.white,
+    secondary: AppColors.signaturePrimary,
+    onSecondary: AppColors.white,
+    surface: AppColors.background,
+    onSurface: AppColors.darkCoffee,
+    surfaceContainerHighest: AppColors.smoothCream,
+    onSurfaceVariant: AppColors.mediumCoffee,
+    error: AppColors.red,
+    onError: AppColors.white,
+    primaryContainer: AppColors.creamyFoam,
+    onPrimaryContainer: AppColors.darkCoffee,
+    secondaryContainer: AppColors.steamedMilk,
+    onSecondaryContainer: AppColors.darkCoffee,
+    outline: AppColors.softHighlight,
+    outlineVariant: AppColors.steamedMilk,
+    shadow: AppColors.darkBackground.withValues(alpha: 0.3),
+    scrim: AppColors.darkBackground.withValues(alpha: 0.5),
+    brightness: Brightness.light,
+  );
 
   static AppBarTheme get _appBarTheme {
     return const AppBarTheme(backgroundColor: AppColors.background);
