@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:favorited_images_repository/favorited_images_repository.dart';
 import 'package:random_coffee_repository/random_coffee_repository.dart';
-import 'package:very_good_coffee_from_peter/bottom_navigation/app_bottom_navigation_scaffold.dart';
+import 'package:very_good_coffee_from_peter/widgets/app_bottom_navigation_scaffold.dart';
 import 'package:very_good_coffee_from_peter/home/view/home_page.dart';
 import 'package:very_good_coffee_from_peter/random_coffees/view/random_coffees_page.dart';
 import 'package:very_good_coffee_from_peter/favorite_coffees/view/favorite_coffees_page.dart';
@@ -19,20 +19,23 @@ class SplashRouteData extends GoRouteData with $SplashRouteData {
 
   @override
   Widget build(BuildContext context, GoRouterState state) {
-    return SplashScreen(
-      onFinished: () => const HomeRouteData().go(context),
-    );
+    return SplashPage(onFinished: () => const HomeRouteData().go(context));
   }
 }
 
-@TypedStatefulShellRoute<AppShellRouteData>(branches: [
-  TypedStatefulShellBranch<HomeBranchData>(routes: [
-    TypedGoRoute<HomeRouteData>(path: '/home'),
-  ]),
-  TypedStatefulShellBranch<CoffeeBranchData>(routes: [
-    TypedGoRoute<CoffeeRouteData>(path: '/coffee'),
-  ]),
-])
+@TypedStatefulShellRoute<AppShellRouteData>(
+  branches: [
+    TypedStatefulShellBranch<HomeBranchData>(
+      routes: [TypedGoRoute<HomeRouteData>(path: '/home')],
+    ),
+    TypedStatefulShellBranch<CoffeeBranchData>(
+      routes: [TypedGoRoute<CoffeeRouteData>(path: '/randoms')],
+    ),
+    TypedStatefulShellBranch<FavoritesBranchData>(
+      routes: [TypedGoRoute<FavoritesRouteData>(path: '/favorites')],
+    ),
+  ],
+)
 @immutable
 class AppShellRouteData extends StatefulShellRouteData {
   const AppShellRouteData();
@@ -57,6 +60,11 @@ class CoffeeBranchData extends StatefulShellBranchData {
   const CoffeeBranchData();
 }
 
+@immutable
+class FavoritesBranchData extends StatefulShellBranchData {
+  const FavoritesBranchData();
+}
+
 /// Empty home route content.
 @immutable
 class HomeRouteData extends GoRouteData with $HomeRouteData {
@@ -68,19 +76,20 @@ class HomeRouteData extends GoRouteData with $HomeRouteData {
   }
 }
 
-/// Coffee tasting route.
-@TypedGoRoute<CoffeeRouteData>(path: '/coffee')
+/// Coffee randoms route.
+@TypedGoRoute<CoffeeRouteData>(path: '/randoms')
 @immutable
 class CoffeeRouteData extends GoRouteData with $CoffeeRouteData {
   const CoffeeRouteData();
 
   @override
   Widget build(BuildContext context, GoRouterState state) {
-    final coffeeRemoteRepository = context.read<CoffeeRemoteRepository>();
+    final randomCoffeeRemoteRepository = context
+        .read<RandomCoffeeRemoteRepository>();
     final favoriteCoffeeRepository = context.read<FavoriteCoffeeRepository>();
 
-    return CoffeeScreen(
-      coffeeRemoteRepository: coffeeRemoteRepository,
+    return RandomCoffeePage(
+      randomCoffeeRemoteRepository: randomCoffeeRemoteRepository,
       favoriteCoffeeRepository: favoriteCoffeeRepository,
     );
   }
@@ -94,7 +103,6 @@ class FavoritesRouteData extends GoRouteData with $FavoritesRouteData {
 
   @override
   Widget build(BuildContext context, GoRouterState state) {
-    final favoriteCoffeeRepository = context.read<FavoriteCoffeeRepository>();
-    return FavoritesScreen(favoriteCoffeeRepository: favoriteCoffeeRepository);
+    return const FavoriteCoffeePage();
   }
 }

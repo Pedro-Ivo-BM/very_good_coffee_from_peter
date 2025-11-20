@@ -2,36 +2,37 @@ import 'package:favorited_images_repository/favorited_images_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vgcfp_core/vgcfp_core.dart';
 
-enum FavoritesStatus { initial, loading, success, empty, failure }
+enum FavoriteCoffeeStatus { initial, loading, success, empty, failure }
 
-enum FavoritesActionStatus { idle, loading, success, failure }
+enum FavoriteCoffeeActionStatus { idle, loading, success, failure }
 
-class FavoritesState {
-  FavoritesState({
-    List<FavoriteCoffeeImage> favorites = const [],
-    this.status = FavoritesStatus.initial,
+class FavoriteCoffeeState {
+  FavoriteCoffeeState({
+    List<FavoriteCoffeeImage> favoriteCoffees = const [],
+    this.status = FavoriteCoffeeStatus.initial,
     this.errorMessage,
-    this.actionStatus = FavoritesActionStatus.idle,
+    this.actionStatus = FavoriteCoffeeActionStatus.idle,
     this.actionMessage,
-  }) : favorites = List<FavoriteCoffeeImage>.unmodifiable(favorites);
+  }) : favoriteCoffees =
+            List<FavoriteCoffeeImage>.unmodifiable(favoriteCoffees);
 
-  final List<FavoriteCoffeeImage> favorites;
-  final FavoritesStatus status;
+  final List<FavoriteCoffeeImage> favoriteCoffees;
+  final FavoriteCoffeeStatus status;
   final String? errorMessage;
-  final FavoritesActionStatus actionStatus;
+  final FavoriteCoffeeActionStatus actionStatus;
   final String? actionMessage;
 
-  FavoritesState copyWith({
-    List<FavoriteCoffeeImage>? favorites,
-    FavoritesStatus? status,
+  FavoriteCoffeeState copyWith({
+    List<FavoriteCoffeeImage>? favoriteCoffees,
+    FavoriteCoffeeStatus? status,
     String? errorMessage,
-    FavoritesActionStatus? actionStatus,
+    FavoriteCoffeeActionStatus? actionStatus,
     String? actionMessage,
     bool clearErrorMessage = false,
     bool clearActionMessage = false,
   }) {
-    return FavoritesState(
-      favorites: favorites ?? this.favorites,
+    return FavoriteCoffeeState(
+      favoriteCoffees: favoriteCoffees ?? this.favoriteCoffees,
       status: status ?? this.status,
       errorMessage: clearErrorMessage
           ? null
@@ -44,31 +45,39 @@ class FavoritesState {
   }
 }
 
-class FavoritesCubit extends Cubit<FavoritesState> {
-  FavoritesCubit({required FavoriteCoffeeRepository favoriteCoffeeRepository})
+class FavoriteCoffeeCubit extends Cubit<FavoriteCoffeeState> {
+  FavoriteCoffeeCubit({required FavoriteCoffeeRepository favoriteCoffeeRepository})
     : _favoriteCoffeeRepository = favoriteCoffeeRepository,
-      super(FavoritesState());
+      super(FavoriteCoffeeState());
 
   final FavoriteCoffeeRepository _favoriteCoffeeRepository;
 
-  Future<void> fetchFavorites() async {
-    emit(
-      state.copyWith(status: FavoritesStatus.loading, clearErrorMessage: true),
-    );
-    try {
-      final favorites = await _favoriteCoffeeRepository.fetchAllFavorites();
+  Future<void> fetchFavoriteCoffees({bool showLoading = true}) async {
+    if (showLoading) {
       emit(
         state.copyWith(
-          favorites: favorites,
-          status: favorites.isEmpty
-              ? FavoritesStatus.empty
-              : FavoritesStatus.success,
+          status: FavoriteCoffeeStatus.loading,
+          clearErrorMessage: true,
+        ),
+      );
+    } else {
+      emit(state.copyWith(clearErrorMessage: true));
+    }
+    try {
+      final favoriteCoffees =
+          await _favoriteCoffeeRepository.fetchAllFavorites();
+      emit(
+        state.copyWith(
+          favoriteCoffees: favoriteCoffees,
+          status: favoriteCoffees.isEmpty
+              ? FavoriteCoffeeStatus.empty
+              : FavoriteCoffeeStatus.success,
         ),
       );
     } catch (error) {
       emit(
         state.copyWith(
-          status: FavoritesStatus.failure,
+          status: FavoriteCoffeeStatus.failure,
           errorMessage: 'Failed to load favorites: $error',
         ),
       );
@@ -78,27 +87,28 @@ class FavoritesCubit extends Cubit<FavoritesState> {
   Future<void> deleteFavorite(String id) async {
     emit(
       state.copyWith(
-        actionStatus: FavoritesActionStatus.loading,
+        actionStatus: FavoriteCoffeeActionStatus.loading,
         clearActionMessage: true,
       ),
     );
     try {
       await _favoriteCoffeeRepository.deleteFavorite(id);
-      final favorites = await _favoriteCoffeeRepository.fetchAllFavorites();
+      final favoriteCoffees =
+          await _favoriteCoffeeRepository.fetchAllFavorites();
       emit(
         state.copyWith(
-          favorites: favorites,
-          status: favorites.isEmpty
-              ? FavoritesStatus.empty
-              : FavoritesStatus.success,
-          actionStatus: FavoritesActionStatus.success,
+          favoriteCoffees: favoriteCoffees,
+          status: favoriteCoffees.isEmpty
+              ? FavoriteCoffeeStatus.empty
+              : FavoriteCoffeeStatus.success,
+          actionStatus: FavoriteCoffeeActionStatus.success,
           actionMessage: 'Favorite removed successfully!',
         ),
       );
     } catch (error) {
       emit(
         state.copyWith(
-          actionStatus: FavoritesActionStatus.failure,
+          actionStatus: FavoriteCoffeeActionStatus.failure,
           actionMessage: 'Failed to delete favorite: $error',
         ),
       );
@@ -106,12 +116,12 @@ class FavoritesCubit extends Cubit<FavoritesState> {
   }
 
   void clearActionStatus() {
-    if (state.actionStatus == FavoritesActionStatus.idle) {
+    if (state.actionStatus == FavoriteCoffeeActionStatus.idle) {
       return;
     }
     emit(
       state.copyWith(
-        actionStatus: FavoritesActionStatus.idle,
+        actionStatus: FavoriteCoffeeActionStatus.idle,
         clearActionMessage: true,
       ),
     );

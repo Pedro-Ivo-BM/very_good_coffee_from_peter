@@ -2,16 +2,16 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
-class SplashScreen extends StatefulWidget {
-  const SplashScreen({required this.onFinished, super.key});
+class SplashPage extends StatefulWidget {
+  const SplashPage({required this.onFinished, super.key});
 
   final VoidCallback onFinished;
 
   @override
-  State<SplashScreen> createState() => _SplashScreenState();
+  State<SplashPage> createState() => _SplashPageState();
 }
 
-class _SplashScreenState extends State<SplashScreen>
+class _SplashPageState extends State<SplashPage>
     with SingleTickerProviderStateMixin {
   static const _splashDuration = Duration(seconds: 5);
 

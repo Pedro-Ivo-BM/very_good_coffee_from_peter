@@ -2,143 +2,160 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:favorited_images_repository/favorited_images_repository.dart';
 import 'package:vgcfp_core/vgcfp_core.dart';
 import 'package:very_good_coffee_from_peter/favorite_coffees/bloc/favorite_coffees_cubit.dart';
+import 'package:very_good_coffee_from_peter/widgets/snackbars/app_snack_bars.dart';
+import 'package:vgcfp_ui/vgcfp_ui.dart';
 
-class FavoritesScreen extends StatelessWidget {
-  const FavoritesScreen({required this.favoriteCoffeeRepository, super.key});
-
-  final FavoriteCoffeeRepository favoriteCoffeeRepository;
+class FavoriteCoffeePage extends StatelessWidget {
+  const FavoriteCoffeePage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) =>
-          FavoritesCubit(favoriteCoffeeRepository: favoriteCoffeeRepository)
-            ..fetchFavorites(),
-      child: const _FavoritesView(),
-    );
+    return const _FavoriteCoffeeView();
   }
 }
 
-class _FavoritesView extends StatelessWidget {
-  const _FavoritesView();
+class _FavoriteCoffeeView extends StatefulWidget {
+  const _FavoriteCoffeeView();
+
+  @override
+  State<_FavoriteCoffeeView> createState() => _FavoriteCoffeeViewState();
+}
+
+class _FavoriteCoffeeViewState extends State<_FavoriteCoffeeView> {
+  String? _visibleSnackBarMessage;
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<FavoritesCubit, FavoritesState>(
+    return BlocListener<FavoriteCoffeeCubit, FavoriteCoffeeState>(
       listenWhen: (previous, current) =>
           previous.status != current.status ||
           previous.actionStatus != current.actionStatus,
       listener: (context, state) {
-        final messenger = ScaffoldMessenger.of(context);
-        if (state.status == FavoritesStatus.failure &&
+      if (state.status == FavoriteCoffeeStatus.failure &&
             state.errorMessage != null) {
-          messenger.showSnackBar(
-            SnackBar(
-              content: Text(state.errorMessage!),
-              backgroundColor: Colors.red,
+          _showSnackBar(
+            context,
+            message: state.errorMessage!,
+            snackBar: ErrorSnackBar(
+              title: state.errorMessage!,
+              actionLabel: 'DISMISS',
             ),
           );
         }
-        if (state.actionStatus == FavoritesActionStatus.success &&
+        if (state.actionStatus == FavoriteCoffeeActionStatus.success &&
             state.actionMessage != null) {
-          messenger.showSnackBar(
-            SnackBar(
-              content: Text(state.actionMessage!),
-              backgroundColor: Colors.green,
+          _showSnackBar(
+            context,
+            message: state.actionMessage!,
+            snackBar: SuccessSnackBar(title: state.actionMessage!),
+          );
+          context.read<FavoriteCoffeeCubit>().clearActionStatus();
+        } else if (state.actionStatus == FavoriteCoffeeActionStatus.failure &&
+            state.actionMessage != null) {
+          _showSnackBar(
+            context,
+            message: state.actionMessage!,
+            snackBar: ErrorSnackBar(
+              title: state.actionMessage!,
+              actionLabel: 'DISMISS',
             ),
           );
-          context.read<FavoritesCubit>().clearActionStatus();
-        } else if (state.actionStatus == FavoritesActionStatus.failure &&
-            state.actionMessage != null) {
-          messenger.showSnackBar(
-            SnackBar(
-              content: Text(state.actionMessage!),
-              backgroundColor: Colors.red,
-            ),
-          );
-          context.read<FavoritesCubit>().clearActionStatus();
+          context.read<FavoriteCoffeeCubit>().clearActionStatus();
         }
       },
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Favorite Coffees'),
-          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         ),
-        body: BlocBuilder<FavoritesCubit, FavoritesState>(
+        body: BlocBuilder<FavoriteCoffeeCubit, FavoriteCoffeeState>(
           builder: (context, state) {
-            if (state.status == FavoritesStatus.loading ||
-                state.status == FavoritesStatus.initial) {
+            if (state.status == FavoriteCoffeeStatus.loading ||
+                state.status == FavoriteCoffeeStatus.initial) {
               return const Center(child: CircularProgressIndicator());
             }
 
-            if (state.status == FavoritesStatus.failure) {
+            if (state.status == FavoriteCoffeeStatus.failure) {
               return _ErrorView(
                 onRetry: () {
-                  context.read<FavoritesCubit>().fetchFavorites();
+                  context.read<FavoriteCoffeeCubit>().fetchFavoriteCoffees();
                 },
               );
             }
 
-            if (state.status == FavoritesStatus.empty) {
-              return const _EmptyFavoritesView();
+            if (state.status == FavoriteCoffeeStatus.empty) {
+              return const _EmptyFavoriteCoffeeView();
             }
 
-            final favorites = state.favorites;
-            return GridView.builder(
-              padding: const EdgeInsets.all(8),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 8,
-                mainAxisSpacing: 8,
-                childAspectRatio: 0.75,
+            final favoriteCoffees = state.favoriteCoffees;
+            final thumbColor = context.colorScheme.primary;
+            return ScrollbarTheme(
+              data: ScrollbarThemeData(
+                thumbColor: WidgetStatePropertyAll(thumbColor),
               ),
-              itemCount: favorites.length,
-              itemBuilder: (context, index) {
-                final favorite = favorites[index];
-                return Card(
-                  clipBehavior: Clip.antiAlias,
-                  child: InkWell(
-                    onTap: () => _showImageDialog(context, favorite),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Expanded(
-                          child: Image.file(
-                            File(favorite.localPath),
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Expanded(
-                                child: Text(
-                                  _formatDate(favorite.savedAt),
-                                  style: Theme.of(context).textTheme.bodySmall,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                              IconButton(
-                                icon: const Icon(Icons.delete, size: 20),
-                                padding: EdgeInsets.zero,
-                                constraints: const BoxConstraints(),
-                                onPressed: () => context
-                                    .read<FavoritesCubit>()
-                                    .deleteFavorite(favorite.id),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
+              child: Scrollbar(
+                thumbVisibility: true,
+                child: GridView.builder(
+                  padding: const EdgeInsets.all(8),
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 8,
+                    mainAxisSpacing: 8,
+                    childAspectRatio: 0.75,
                   ),
-                );
-              },
+                  itemCount: favoriteCoffees.length,
+                  itemBuilder: (context, index) {
+                    final favoriteCoffee = favoriteCoffees[index];
+                    return Card(
+                      color: AppColors.steamedMilk,
+                      clipBehavior: Clip.antiAlias,
+                      child: InkWell(
+                        onTap: () => _showImageDialog(context, favoriteCoffee),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            Expanded(
+                              child: Image.file(
+                                File(favoriteCoffee.localPath),
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      _formatDate(favoriteCoffee.savedAt),
+                                      style: AppTextStyle.bodySmallBold,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                  IconButton(
+                                    icon: Icon(
+                                      Icons.delete,
+                                      size: 20,
+                                      color: context.colorScheme.primary,
+                                    ),
+                                    padding: EdgeInsets.zero,
+                                    constraints: const BoxConstraints(),
+                                    onPressed: () => context
+                                      .read<FavoriteCoffeeCubit>()
+                                        .deleteFavorite(favoriteCoffee.id),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
             );
           },
         ),
@@ -146,9 +163,36 @@ class _FavoritesView extends StatelessWidget {
     );
   }
 
+  void _showSnackBar(
+    BuildContext context, {
+    required String message,
+    required SnackBar snackBar,
+  }) {
+    if (_visibleSnackBarMessage == message) {
+      return;
+    }
+
+    setState(() {
+      _visibleSnackBarMessage = message;
+    });
+
+    final messenger = ScaffoldMessenger.of(context);
+    messenger
+        .showSnackBar(snackBar)
+        .closed
+        .then((_) {
+      if (!mounted) return;
+      if (_visibleSnackBarMessage == message) {
+        setState(() {
+          _visibleSnackBarMessage = null;
+        });
+      }
+    });
+  }
+
   Future<void> _showImageDialog(
     BuildContext context,
-    FavoriteCoffeeImage favorite,
+    FavoriteCoffeeImage favoriteCoffee,
   ) async {
     await showDialog<void>(
       context: context,
@@ -158,7 +202,10 @@ class _FavoritesView extends StatelessWidget {
           children: [
             Stack(
               children: [
-                Image.file(File(favorite.localPath), fit: BoxFit.contain),
+                Image.file(
+                  File(favoriteCoffee.localPath),
+                  fit: BoxFit.contain,
+                ),
                 Positioned(
                   top: 8,
                   right: 8,
@@ -182,7 +229,7 @@ class _FavoritesView extends StatelessWidget {
                     style: Theme.of(context).textTheme.labelSmall,
                   ),
                   Text(
-                    _formatDate(favorite.savedAt),
+                    _formatDate(favoriteCoffee.savedAt),
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),
                 ],
@@ -203,8 +250,8 @@ class _FavoritesView extends StatelessWidget {
   }
 }
 
-class _EmptyFavoritesView extends StatelessWidget {
-  const _EmptyFavoritesView();
+class _EmptyFavoriteCoffeeView extends StatelessWidget {
+  const _EmptyFavoriteCoffeeView();
 
   @override
   Widget build(BuildContext context) {

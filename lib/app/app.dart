@@ -8,6 +8,7 @@ import 'package:very_good_coffee_from_peter/app_router/app_router.dart';
 import 'package:favorited_images_repository/favorited_images_repository.dart';
 import 'package:image_download_service/image_download_service.dart';
 import 'package:random_coffee_repository/random_coffee_repository.dart';
+import 'package:very_good_coffee_from_peter/favorite_coffees/bloc/favorite_coffees_cubit.dart';
 
 class App extends StatelessWidget {
   App({AppRouter? appRouter, super.key})
@@ -30,7 +31,7 @@ class _AppView extends StatelessWidget {
   Widget build(BuildContext context) {
     final httpClient = HttpClientImpl(httpClient: http.Client());
 
-    final coffeeRemoteRepository = CoffeeRemoteRepositoryImpl(
+    final randomCoffeeRemoteRepository = RandomCoffeeRemoteRepositoryImpl(
       httpClient: httpClient,
     );
 
@@ -47,8 +48,8 @@ class _AppView extends StatelessWidget {
 
     return MultiRepositoryProvider(
       providers: [
-        RepositoryProvider<CoffeeRemoteRepository>.value(
-          value: coffeeRemoteRepository,
+        RepositoryProvider<RandomCoffeeRemoteRepository>.value(
+          value: randomCoffeeRemoteRepository,
         ),
         RepositoryProvider<FavoriteCoffeeRepository>.value(
           value: favoriteCoffeeRepository,
@@ -57,10 +58,15 @@ class _AppView extends StatelessWidget {
           value: imageDownloadService,
         ),
       ],
-      child: MaterialApp.router(
-        title: 'Very Good Gallery',
-        theme: AppTheme.standard,
-        routerConfig: _appRouter.router,
+      child: BlocProvider(
+        create: (_) => FavoriteCoffeeCubit(
+          favoriteCoffeeRepository: favoriteCoffeeRepository,
+        )..fetchFavoriteCoffees(),
+        child: MaterialApp.router(
+          title: 'Very Good Gallery',
+          theme: AppTheme.standard,
+          routerConfig: _appRouter.router,
+        ),
       ),
     );
   }

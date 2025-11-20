@@ -48,8 +48,16 @@ RouteBase get $appShellRouteData => StatefulShellRouteData.$route(
     StatefulShellBranchData.$branch(
       routes: [
         GoRouteData.$route(
-          path: '/coffee',
+          path: '/randoms',
           factory: $CoffeeRouteData._fromState,
+        ),
+      ],
+    ),
+    StatefulShellBranchData.$branch(
+      routes: [
+        GoRouteData.$route(
+          path: '/favorites',
+          factory: $FavoritesRouteData._fromState,
         ),
       ],
     ),
@@ -86,7 +94,7 @@ mixin $CoffeeRouteData on GoRouteData {
       const CoffeeRouteData();
 
   @override
-  String get location => GoRouteData.$location('/coffee');
+  String get location => GoRouteData.$location('/randoms');
 
   @override
   void go(BuildContext context) => context.go(location);
@@ -101,14 +109,6 @@ mixin $CoffeeRouteData on GoRouteData {
   @override
   void replace(BuildContext context) => context.replace(location);
 }
-
-RouteBase get $coffeeRouteData =>
-    GoRouteData.$route(path: '/coffee', factory: $CoffeeRouteData._fromState);
-
-RouteBase get $favoritesRouteData => GoRouteData.$route(
-  path: '/favorites',
-  factory: $FavoritesRouteData._fromState,
-);
 
 mixin $FavoritesRouteData on GoRouteData {
   static FavoritesRouteData _fromState(GoRouterState state) =>
@@ -130,3 +130,11 @@ mixin $FavoritesRouteData on GoRouteData {
   @override
   void replace(BuildContext context) => context.replace(location);
 }
+
+RouteBase get $coffeeRouteData =>
+    GoRouteData.$route(path: '/randoms', factory: $CoffeeRouteData._fromState);
+
+RouteBase get $favoritesRouteData => GoRouteData.$route(
+  path: '/favorites',
+  factory: $FavoritesRouteData._fromState,
+);
