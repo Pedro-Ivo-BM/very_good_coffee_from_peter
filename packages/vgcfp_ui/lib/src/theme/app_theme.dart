@@ -2,9 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:vgcfp_ui/src/theme/app_colors.dart';
 import 'package:vgcfp_ui/src/theme/typography/app_text_styles.dart';
 
-const _smallTextScaleFactor = 0.75;
-const _mediumTextScaleFactor = 0.80;
-
 /// Provides configured [ThemeData] variants for the UI.
 class AppTheme {
   /// Standard `ThemeData` for App UI.
@@ -17,16 +14,6 @@ class AppTheme {
       textTheme: _textTheme,
       dialogTheme: _dialogTheme,
     );
-  }
-
-  /// `ThemeData` for App UI for small screens.
-  static ThemeData get small {
-    return standard.copyWith(textTheme: _smallTextTheme);
-  }
-
-  /// `ThemeData` for App UI for medium screens.
-  static ThemeData get medium {
-    return standard.copyWith(textTheme: _mediumTextTheme);
   }
 
   static TextTheme get _textTheme {
@@ -45,94 +32,6 @@ class AppTheme {
       labelLarge: AppTextStyle.labelLarge,
       labelMedium: AppTextStyle.labelMedium,
       labelSmall: AppTextStyle.labelSmall,
-    );
-  }
-
-  static TextTheme get _smallTextTheme {
-    return TextTheme(
-      displayLarge: AppTextStyle.displayLarge.copyWith(
-        fontSize: _textTheme.displayLarge!.fontSize! * _smallTextScaleFactor,
-      ),
-      displayMedium: AppTextStyle.displayMedium.copyWith(
-        fontSize: _textTheme.displayMedium!.fontSize! * _smallTextScaleFactor,
-      ),
-      displaySmall: AppTextStyle.displaySmall.copyWith(
-        fontSize: _textTheme.displaySmall!.fontSize! * _smallTextScaleFactor,
-      ),
-      headlineMedium: AppTextStyle.headlineMedium.copyWith(
-        fontSize: _textTheme.headlineMedium!.fontSize! * _smallTextScaleFactor,
-      ),
-      headlineSmall: AppTextStyle.headlineSmall.copyWith(
-        fontSize: _textTheme.headlineSmall!.fontSize! * _smallTextScaleFactor,
-      ),
-      titleLarge: AppTextStyle.titleLarge.copyWith(
-        fontSize: _textTheme.titleLarge!.fontSize! * _smallTextScaleFactor,
-      ),
-      titleMedium: AppTextStyle.titleMedium.copyWith(
-        fontSize: _textTheme.titleMedium!.fontSize! * _smallTextScaleFactor,
-      ),
-      titleSmall: AppTextStyle.titleSmall.copyWith(
-        fontSize: _textTheme.titleSmall!.fontSize! * _smallTextScaleFactor,
-      ),
-      bodyLarge: AppTextStyle.bodyLarge.copyWith(
-        fontSize: _textTheme.bodyLarge!.fontSize! * _smallTextScaleFactor,
-      ),
-      bodyMedium: AppTextStyle.bodyMedium.copyWith(
-        fontSize: _textTheme.bodyMedium!.fontSize! * _smallTextScaleFactor,
-      ),
-      bodySmall: AppTextStyle.bodySmall.copyWith(
-        fontSize: _textTheme.bodySmall!.fontSize! * _smallTextScaleFactor,
-      ),
-      labelSmall: AppTextStyle.labelSmall.copyWith(
-        fontSize: _textTheme.labelSmall!.fontSize! * _smallTextScaleFactor,
-      ),
-      labelLarge: AppTextStyle.labelLarge.copyWith(
-        fontSize: _textTheme.labelLarge!.fontSize! * _smallTextScaleFactor,
-      ),
-    );
-  }
-
-  static TextTheme get _mediumTextTheme {
-    return TextTheme(
-      displayLarge: AppTextStyle.displayLarge.copyWith(
-        fontSize: _textTheme.displayLarge!.fontSize! * _mediumTextScaleFactor,
-      ),
-      displayMedium: AppTextStyle.displayMedium.copyWith(
-        fontSize: _textTheme.displayMedium!.fontSize! * _mediumTextScaleFactor,
-      ),
-      displaySmall: AppTextStyle.displaySmall.copyWith(
-        fontSize: _textTheme.displaySmall!.fontSize! * _mediumTextScaleFactor,
-      ),
-      headlineMedium: AppTextStyle.headlineMedium.copyWith(
-        fontSize: _textTheme.headlineMedium!.fontSize! * _mediumTextScaleFactor,
-      ),
-      headlineSmall: AppTextStyle.headlineSmall.copyWith(
-        fontSize: _textTheme.headlineSmall!.fontSize! * _mediumTextScaleFactor,
-      ),
-      titleLarge: AppTextStyle.titleLarge.copyWith(
-        fontSize: _textTheme.titleLarge!.fontSize! * _mediumTextScaleFactor,
-      ),
-      titleMedium: AppTextStyle.titleMedium.copyWith(
-        fontSize: _textTheme.titleMedium!.fontSize! * _mediumTextScaleFactor,
-      ),
-      titleSmall: AppTextStyle.titleSmall.copyWith(
-        fontSize: _textTheme.titleSmall!.fontSize! * _mediumTextScaleFactor,
-      ),
-      bodyLarge: AppTextStyle.bodyLarge.copyWith(
-        fontSize: _textTheme.bodyLarge!.fontSize! * _mediumTextScaleFactor,
-      ),
-      bodyMedium: AppTextStyle.bodyMedium.copyWith(
-        fontSize: _textTheme.bodyMedium!.fontSize! * _mediumTextScaleFactor,
-      ),
-      bodySmall: AppTextStyle.bodySmall.copyWith(
-        fontSize: _textTheme.bodySmall!.fontSize! * _mediumTextScaleFactor,
-      ),
-      labelSmall: AppTextStyle.labelSmall.copyWith(
-        fontSize: _textTheme.labelSmall!.fontSize! * _mediumTextScaleFactor,
-      ),
-      labelLarge: AppTextStyle.labelLarge.copyWith(
-        fontSize: _textTheme.labelLarge!.fontSize! * _mediumTextScaleFactor,
-      ),
     );
   }
 
@@ -159,7 +58,17 @@ class AppTheme {
   );
 
   static AppBarTheme get _appBarTheme {
-    return const AppBarTheme(backgroundColor: AppColors.background);
+    return AppBarTheme(
+      backgroundColor: AppColors.background,
+      foregroundColor: AppColors.darkCoffee,
+      elevation: 0,
+      centerTitle: true,
+      titleTextStyle: AppTextStyle.titleLarge.copyWith(
+        color: AppColors.darkCoffee,
+      ),
+      iconTheme: const IconThemeData(color: AppColors.darkCoffee),
+      actionsIconTheme: const IconThemeData(color: AppColors.darkCoffee),
+    );
   }
 
   static ElevatedButtonThemeData get _elevatedButtonTheme {
