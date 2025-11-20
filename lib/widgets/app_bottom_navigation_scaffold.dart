@@ -22,6 +22,9 @@ class AppBottomNavigationScaffold extends StatelessWidget {
     return Scaffold(
       body: AnimatedSwitcher(
         duration: const Duration(milliseconds: 250),
+        layoutBuilder: (Widget? currentChild, List<Widget> previousChildren) {
+          return currentChild ?? const SizedBox.shrink();
+        },
         transitionBuilder: (child, animation) {
           return FadeTransition(opacity: animation, child: child);
         },
